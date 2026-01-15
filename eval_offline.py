@@ -58,6 +58,12 @@ def main() -> None:
         for images, labels in tqdm(val_loader, desc="评估中"):
             outputs = model(images)
 
+            # 处理不同的输出格式
+            if isinstance(outputs, tuple):
+                outputs = outputs[0]
+            if hasattr(outputs, 'data'):
+                outputs = outputs.data
+
             # Top-1
             _, pred = outputs.max(1)
             correct_top1 += pred.eq(labels).sum().item()
